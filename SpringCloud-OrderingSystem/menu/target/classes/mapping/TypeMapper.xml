@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.southwind.dao.TypeDao">
+
+    <!-- 根据ID查类型 -->
+    <select id="findById" parameterType="long" resultType="Type">
+		select * from t_type where id = #{id}
+	</select>
+
+    <!-- 查找所有菜品 -->
+    <select id="findAll" resultType="Type">
+		select * from t_type
+	</select>
+</mapper>

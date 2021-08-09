@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.southwind.dao.OrderDao">
+
+    <!-- 映射数据库字段到Order实体类 -->
+    <resultMap id="orderMap" type="com.southwind.entity.Order">
+        <id property="id" column="oid"/>
+        <result property="date" column="date"/>
+        <result property="state" column="state"/>
+        <!-- 映射menu -->
+        <association property="menu" javaType="com.southwind.entity.Menu">
+            <id property="id" column="mid"/>
+            <result property="name" column="name"/>
+            <result property="price" column="price"/>
+            <result property="flavor" column="flavor"/>
+        </association>
+    </resultMap>
+
+    <!-- 映射数据库字段到Order实体类 -->
+    <resultMap id="orderMap2" type="com.southwind.entity.Order">
+        <id property="id" column="oid"/>
+        <result property="date" column="date"/>
+        <!-- 映射menu -->
+        <association property="menu" javaType="com.southwind.entity.Menu">
+            <id property="id" column="mid"/>
+            <result property="name" column="name"/>
+            <result property="price" column="price"/>
+            <result property="flavor" column="flavor"/>
+        </association>
+        <!-- 映射user -->
+        <association property="user" javaType="com.southwind.entity.User">
+            <id property="id" column="uid"/>
+            <result property="nickname" column="nickname"/>
+            <result property="telephone" column="telephone"/>
+            <result property="address" column="address"/>
+        </association>
+    </resultMap>
+
+    <!-- 1.新增订单 -->
+    <insert id="save" parameterType="com.southwind.entity.Order">
+		insert into t_order(uid,mid,aid,date,state) values(#{user.id},#{menu.id},null,#{date},0)
+	</insert>
+
+    <!-- 2.分页查询用户订单 -->
+    <select id="findAllByUid" resultMap="orderMap">
+		select m.id mid,m.name,m.price,m.flavor,o.id oid,o.date,o.state from t_order o,t_menu m where o.mid = m.id and o.uid = #{param1} order by oid limit #{param2},#{param3}
+	</select>
+
+    <!-- 3.查询用户订单总数 -->
+    <select id="countByUid" parameterType="long" resultType="int">
+		select count(*) from t_order where uid = #{uid}
+	</select>
+
+    <!-- 4.删除某菜单下所有订单 -->
+    <delete id="deleteByMid" parameterType="long">
+		delete from t_order where mid = #{mid}
+	</delete>
+
+    <!-- 5.删除某用户下所有订单 -->
+    <delete id="deleteByUid" parameterType="long">
+		delete from t_order where uid = #{uid}
+	</delete>
+
+    <!-- 6.根据订单状态查询订单 -->
+    <select id="findAllByState" resultMap="orderMap2">
+		select m.id mid,m.name,m.price,m.flavor,o.id oid,o.date,u.id uid,u.nickname,u.telephone,u.address from t_order o,t_menu m,t_user u where o.mid = m.id and o.uid = u.id and o.state = #{param1} order by oid limit #{param2},#{param3}
+	</select>
+
+    <!-- 7.查询某状态的订单总数 -->
+    <select id="countByState" parameterType="int" resultType="int">
+		select count(*) from t_order where state = #{state}
+	</select>
+
+    <!-- 8.修改订单状态 -->
+    <update id="updateState">
+		update t_order set aid = #{param2},state = #{param3} where id = #{param1}
+	</update>
+</mapper>
