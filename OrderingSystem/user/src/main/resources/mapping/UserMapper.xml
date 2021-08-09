@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.southwind.dao.UserDao">
+    <!-- 分页查询用户 -->
+    <select id="findAll" resultType="User">
+		select * from t_user order by id limit #{param1},#{param2}
+	</select>
+
+    <!-- 查询用户数量 -->
+    <select id="count" resultType="int">
+		select count(*) from t_user;
+	</select>
+
+    <!-- 保存用户 -->
+    <insert id="save" parameterType="User">
+		insert into t_user(username,password,nickname,gender,telephone,registerdate,address) values(#{username},#{password},#{nickname},#{gender},#{telephone},#{registerdate},#{address})
+	</insert>
+
+    <!-- 根据ID删除用户 -->
+    <delete id="deleteById" parameterType="long">
+		delete from t_user where id = #{id}
+	</delete>
+</mapper>
